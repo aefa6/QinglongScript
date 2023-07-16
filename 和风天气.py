@@ -2,7 +2,7 @@ import requests
 import json
 import notify
 
-#在青龙环境变量里填写下面的信息，经纬度请自行百度，使用青龙自带的推送
+#填写下面的信息，经纬度请自行百度，使用青龙自带的推送
 api = "你的和风天气API key"
 loca = "数字，代表你所在位置"
 
