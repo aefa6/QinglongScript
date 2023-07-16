@@ -5,7 +5,7 @@
 import requests
 import json
 import notify 
-#填写下面的信息，经纬度请自行百度，自带的推送只有server酱
+#填写下面的信息，经纬度请自行百度，使用青龙自带的推送
 key = "你的彩云天气API key"
 lon = "你所在位置的经度"
 lat = "你所在位置的纬度"
