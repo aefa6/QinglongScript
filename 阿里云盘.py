@@ -1,4 +1,8 @@
-# 纯转发，没做改动，忘记来源在哪了，如有侵权请提issue
+# 在原作者的基础上更换成青龙通用的通知接口，其他代码全部照搬的，如有侵权请告知，立即删除。
+# @author Sten
+# 作者仓库:https://github.com/aefa6/QinglongScript.git
+# 觉得不错麻烦点个star谢谢
+
 #!/usr/bin/python
 # coding=utf-8
 '''
@@ -9,6 +13,7 @@ cron: 0 30 8 * * *
 new Env('阿里云盘4月自动签到');
 '''
 import sys
+import notify
 import os
 import traceback
 import requests
@@ -22,20 +27,11 @@ work_path = os.path.dirname(os.path.abspath(__file__))
 SIGN_LOG_FILE = os.path.join(work_path, SIGN_LOG)
 logger.add(SIGN_LOG_FILE, encoding='utf8')
 
-PUSH_PLUS_TOKEN = ''  # push+ 微信推送的用户令牌
-# server 酱的 PUSH_KEY，兼容旧版与 Turbo 版
-PUSH_KEY = ''
-if os.getenv('PUSH_PLUS_TOKEN'):
-    PUSH_PLUS_TOKEN = os.getenv('PUSH_PLUS_TOKEN')
-if os.getenv('PUSH_KEY'):
-    PUSH_KEY = os.getenv('PUSH_KEY')
-
 # 请在阿里云盘网页端获取：JSON.parse(localStorage.getItem("token")).refresh_token
 refresh_token = ""
 if refresh_token is None:
     logger.error("请先在环境变量里添加阿里云盘的refresh_token")
     exit(0)
-
 
 def post_msg(url: str, data: dict) -> bool:
     response = requests.post(url, data=data)
@@ -44,29 +40,6 @@ def post_msg(url: str, data: dict) -> bool:
         return True
     else:
         return False
-
-
-def PushPlus_send(token, title: str, desp: str = '', template: str = 'markdown') -> bool:
-    url = 'http://www.pushplus.plus/send'
-    data = {
-        'token': token,  # 用户令牌
-        'title': title,  # 消息标题
-        'content': desp,  # 具体消息内容，根据不同template支持不同格式
-        'template': template,  # 发送消息模板
-    }
-
-    return post_msg(url, data)
-
-
-def ServerChan_send(sendkey, title: str, desp: str = '') -> bool:
-    url = 'https://sctapi.ftqq.com/{0}.send'.format(sendkey)
-    data = {
-        'title': title,  # 消息标题，必填。最大长度为 32
-        'desp': desp  # 消息内容，选填。支持 Markdown语法 ，最大长度为 32KB ,消息卡片截取前 30 显示
-    }
-
-    return post_msg(url, data)
-
 
 def get_access_token(token):
     access_token = ''
@@ -183,10 +156,7 @@ class ALiYunPan(object):
                     logger.info(log_info)
 
                     msg = log_info + '\n\n' + msg
-                    if PUSH_KEY:
-                        ServerChan_send(PUSH_KEY, title, msg)
-                    if PUSH_PLUS_TOKEN:
-                        PushPlus_send(PUSH_PLUS_TOKEN, title, msg)
+                    notify.send(title, msg)
                 else:
                     logger.warning(f"resp_json={resp_json}")
             else:
