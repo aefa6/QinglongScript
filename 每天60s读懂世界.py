@@ -23,4 +23,4 @@ info2 = f"""
 
 # 发送分片推送  
 notify.send("每天60s读懂世界", info1 + "\n\n")
-notify.send("", info2)
+notify.send("每天60s读懂世界", info2)
