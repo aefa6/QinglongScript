@@ -5,12 +5,22 @@
 import requests
 import json
 import notify
-url = 'https://60s.viki.moe/?encoding=text'  # 来自知乎的一位大佬的接口
-resp = requests.get(url)
-news = resp.text.replace('\n', '\n      \n    ')
 
-info = f"""
-{news}   
+url = 'https://60s.viki.moe/?encoding=text'
+resp = requests.get(url)
+
+# 分片处理
+pieces = resp.text.split('\n', 8)
+content1 = '\n'.join(pieces[:8])  
+content2 = '\n'.join(pieces[8:])
+
+info1 = f"""
+{content1}   
+"""
+info2 = f"""
+{content2}   
 """
 
-notify.send("每天60s读懂世界", info)
+# 发送分片推送  
+notify.send("每天60s读懂世界", info1 + "\n\n")
+notify.send("", info2)
