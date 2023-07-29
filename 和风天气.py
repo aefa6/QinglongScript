@@ -7,10 +7,10 @@ api = "你的和风天气API key"
 loca = "数字，代表你所在位置"
 
 # 和风天气获取
-api_url = "https://devapi.qweather.com/v7/weather/now?location={loca}&key={api}" 
-apim_url = "https://devapi.qweather.com/v7/minutely/5m?location={loca}&key={api}" 
-apiw_url = "https://devapi.qweather.com/v7/warning/now?location={loca}&key={api}" 
-apii_url = "https://devapi.qweather.com/v7/indices/1d?type=3,5,13&location={loca}&key={api}" 
+api_url = f"https://devapi.qweather.com/v7/weather/now?location={loca}&key={api}" 
+apim_url = f"https://devapi.qweather.com/v7/minutely/5m?location={loca}&key={api}" 
+apiw_url = f"https://devapi.qweather.com/v7/warning/now?location={loca}&key={api}" 
+apii_url = f"https://devapi.qweather.com/v7/indices/1d?type=3,5,13&location={loca}&key={api}" 
 response = requests.get(api_url)
 data = json.loads(response.text)
 weather = data['now']
