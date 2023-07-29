@@ -11,7 +11,7 @@ lon = "你所在位置的经度"
 lat = "你所在位置的纬度"
 
 #下面的不用管了
-api_url = "https://api.caiyunapp.com/v2.6/{key}/{lon},{lat}/weather?alert=true&realtime&minutely" 
+api_url = f"https://api.caiyunapp.com/v2.6/{key}/{lon},{lat}/weather?alert=true&realtime&minutely" 
 response = requests.get(api_url)
 data = json.loads(response.text)
 weather = data['result']
