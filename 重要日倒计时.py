@@ -2,7 +2,7 @@
 # 作者仓库:https://github.com/aefa6/QinglongScript.git
 # 觉得不错麻烦点个star谢谢
 # 代码会尝试导入 lunar 包。如果导入成功，它将计算并添加阴历生日的倒计时到推送的消息中。如果导入失败则自动跳过，当然你也可以通过 pip install lunar等方法来安装依赖。
-# 使用方法：第十行填入阳历生日，34行填入阴历生日，55行可以自定义需要的重要日名称和日期（请按照模板中现有的格式填写）。
+# 使用方法：第10行填入阳历生日，34行填入阴历生日，55行可以自定义需要的重要日名称和日期（请按照模板中现有的格式填写,多个请用@分隔）。
 import notify
 from datetime import datetime
 
@@ -51,25 +51,30 @@ try:
 except ImportError:
     pass
 
-# 在这里填入你的自定义事件的名称和日期，格式为 "事件名:月-日"
-custom_event_str = "纪念日:01-01"
+# 在这里填入你的自定义事件的名称和日期，格式为 "事件名:月-日@事件名:月-日@..."
+custom_event_str = "纪念日:01-01@毕业日:01-01"
 
-# 获取自定义事件的名称和日期
-custom_event_name, custom_event_date_str = custom_event_str.split(":")
+# 分割多个自定义事件
+custom_events = custom_event_str.split("@")
 
-# 获取今年的自定义事件日期
-custom_event_date_this_year = datetime.strptime(f"{now.year}-{custom_event_date_str}", "%Y-%m-%d")
+for custom_event in custom_events:
+    # 获取自定义事件的名称和日期
+    custom_event_name, custom_event_date_str = custom_event.split(":")
 
-# 如果今年的自定义事件日期已经过去，那么下一次自定义事件日期就是明年
-if now > custom_event_date_this_year:
-    next_custom_event_date = datetime.strptime(f"{now.year + 1}-{custom_event_date_str}", "%Y-%m-%d")
-else:
-    next_custom_event_date = custom_event_date_this_year
+    # 获取今年的自定义事件日期
+    custom_event_date_this_year = datetime.strptime(f"{now.year}-{custom_event_date_str}", "%Y-%m-%d")
 
-# 计算距离下一次自定义事件还有多少天
-custom_event_days_left = (next_custom_event_date - now).days
+    # 如果今年的自定义事件日期已经过去，那么下一次自定义事件日期就是明年
+    if now > custom_event_date_this_year:
+        next_custom_event_date = datetime.strptime(f"{now.year + 1}-{custom_event_date_str}", "%Y-%m-%d")
+    else:
+        next_custom_event_date = custom_event_date_this_year
 
-info += f" 距离 {custom_event_name} 还有 {custom_event_days_left} 天。"
+    # 计算距离下一次自定义事件还有多少天
+    custom_event_days_left = (next_custom_event_date - now).days
+
+    info += f" 距离 {custom_event_name} 还有 {custom_event_days_left} 天。"
 
 # 发送通知
 notify.send("重要日倒计时", info)
+
