@@ -1,4 +1,4 @@
-# 来自吾爱论坛，在原作者的基础上把推送消息换成了青龙自带的通知，如有侵权请告知，将立即删除。
+# 来自吾爱论坛，在原作者的基础上把推送消息换成了青龙自带的通知，修复了脚本在青龙容器运行不会自动停止的bug，如有侵权请告知，将立即删除。
 # @author Sten
 # 我的仓库:https://github.com/aefa6/QinglongScript.git
 # 觉得不错麻烦点个star谢谢
@@ -211,5 +211,5 @@ def handler(event, context):  # aliyun default
  
  
 if __name__ == "__main__":
-    # time.sleep(random.randint(5, 30))
     main()
+    time.sleep(random.randint(5, 30))
