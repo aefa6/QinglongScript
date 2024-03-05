@@ -1,7 +1,8 @@
 # @author Sten
 # 作者仓库:https://github.com/aefa6/QinglongScript.git
 # 觉得不错麻烦点个star谢谢
-# 使用方法：第9行填入阳历生日，29行可以自定义需要的重要日名称和日期（请按照模板中现有的格式填写,多个请用@分隔）。
+# 使用方法：第9行填入阳历生日，29行可以自定义需要的重要日名称和日期（请按照模板中现有的格式填写,多个请用@分隔）。需要阴历倒计时请看另一个版本。
+
 import notify
 from datetime import datetime
 
