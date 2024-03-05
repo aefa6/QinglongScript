@@ -25,5 +25,5 @@ info2 = f"""
 notify.send("每天60s读懂世界", info1 + "\n\n")
 notify.send("每天60s读懂世界", info2)
 
-# 发送推送  
+# 全文整段发送推送  
 # notify.send("每天60s读懂世界", content)
