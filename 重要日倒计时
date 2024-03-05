@@ -1,0 +1,75 @@
+# @author Sten
+# 作者仓库:https://github.com/aefa6/QinglongScript.git
+# 觉得不错麻烦点个star谢谢
+# 代码会尝试导入 lunar 包。如果导入成功，它将计算并添加阴历生日的倒计时到推送的消息中。如果导入失败则自动跳过，当然你也可以通过 pip install lunar等方法来安装依赖。
+# 使用方法：第十行填入阳历生日，34行填入阴历生日，55行可以自定义需要的重要日名称和日期（请按照模板中现有的格式填写）。
+import notify
+from datetime import datetime
+
+# 在这里填入你的阳历生日，格式为 "月-日"
+solar_birthday_str = "01-01"
+
+# 获取当前日期
+now = datetime.now()
+
+# 获取今年的阳历生日
+solar_birthday_this_year = datetime.strptime(f"{now.year}-{solar_birthday_str}", "%Y-%m-%d")
+
+# 如果今年的阳历生日已经过去，那么下一次阳历生日就是明年的生日
+if now > solar_birthday_this_year:
+    next_solar_birthday = datetime.strptime(f"{now.year + 1}-{solar_birthday_str}", "%Y-%m-%d")
+else:
+    next_solar_birthday = solar_birthday_this_year
+
+# 计算距离下一次阳历生日还有多少天
+solar_days_left = (next_solar_birthday - now).days
+
+info = f"距离你下一次的阳历生日还有 {solar_days_left} 天。"
+
+# 尝试导入 lunar 包来计算阴历生日的倒计时
+try:
+    from lunar import LunarDate
+
+    # 在这里填入你的阴历生日，格式为 "月-日"
+    lunar_birthday_str = "01-01"
+
+    # 获取今年的阴历生日
+    lunar_birthday_month, lunar_birthday_day = map(int, lunar_birthday_str.split("-"))
+    lunar_birthday_this_year = LunarDate(now.year, lunar_birthday_month, lunar_birthday_day).toSolarDate()
+
+    # 如果今年的阴历生日已经过去，那么下一次阴历生日就是明年的生日
+    if now.date() > lunar_birthday_this_year:
+        next_lunar_birthday = LunarDate(now.year + 1, lunar_birthday_month, lunar_birthday_day).toSolarDate()
+    else:
+        next_lunar_birthday = lunar_birthday_this_year
+
+    # 计算距离下一次阴历生日还有多少天
+    lunar_days_left = (next_lunar_birthday - now.date()).days
+
+    info += f" 阴历生日还有 {lunar_days_left} 天。"
+
+except ImportError:
+    pass
+
+# 在这里填入你的自定义事件的名称和日期，格式为 "事件名:月-日"
+custom_event_str = "纪念日:01-01"
+
+# 获取自定义事件的名称和日期
+custom_event_name, custom_event_date_str = custom_event_str.split(":")
+
+# 获取今年的自定义事件日期
+custom_event_date_this_year = datetime.strptime(f"{now.year}-{custom_event_date_str}", "%Y-%m-%d")
+
+# 如果今年的自定义事件日期已经过去，那么下一次自定义事件日期就是明年
+if now > custom_event_date_this_year:
+    next_custom_event_date = datetime.strptime(f"{now.year + 1}-{custom_event_date_str}", "%Y-%m-%d")
+else:
+    next_custom_event_date = custom_event_date_this_year
+
+# 计算距离下一次自定义事件还有多少天
+custom_event_days_left = (next_custom_event_date - now).days
+
+info += f" 距离 {custom_event_name} 还有 {custom_event_days_left} 天。"
+
+# 发送通知
+notify.send("重要日倒计时", info)
