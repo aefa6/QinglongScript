@@ -11,15 +11,15 @@ from zhdate import ZhDate
 # 在这里填入你的阳历生日，格式为 "月-日"
 solar_birthday_str = "01-01"
 
-# 获取当前日期
-now = datetime.now()
+# 获取当前日期（并转换为日期格式）
+now = datetime.now().date()
 
 # 获取今年的阳历生日
-solar_birthday_this_year = datetime.strptime(f"{now.year}-{solar_birthday_str}", "%Y-%m-%d")
+solar_birthday_this_year = datetime.strptime(f"{now.year}-{solar_birthday_str}", "%Y-%m-%d").date()
 
 # 如果今年的阳历生日已经过去，那么下一次阳历生日就是明年的生日
 if now > solar_birthday_this_year:
-    next_solar_birthday = datetime.strptime(f"{now.year + 1}-{solar_birthday_str}", "%Y-%m-%d")
+    next_solar_birthday = datetime.strptime(f"{now.year + 1}-{solar_birthday_str}", "%Y-%m-%d").date()
 else:
     next_solar_birthday = solar_birthday_this_year
 
@@ -36,13 +36,13 @@ lunar_birthday_month, lunar_birthday_day = map(int, lunar_birthday_str.split("-"
 lunar_birthday_this_year = ZhDate(now.year, lunar_birthday_month, lunar_birthday_day).to_datetime().date()
 
 # 如果今年的阴历生日已经过去，那么下一次阴历生日就是明年的生日
-if now.date() > lunar_birthday_this_year:
+if now > lunar_birthday_this_year:
     next_lunar_birthday = ZhDate(now.year + 1, lunar_birthday_month, lunar_birthday_day).to_datetime().date()
 else:
     next_lunar_birthday = lunar_birthday_this_year
 
 # 计算距离下一次阴历生日还有多少天
-lunar_days_left = (next_lunar_birthday - now.date()).days
+lunar_days_left = (next_lunar_birthday - now).days
 
 info += f" 阴历生日还有 {lunar_days_left} 天。"
 
@@ -57,11 +57,11 @@ for custom_event in custom_events:
     custom_event_name, custom_event_date_str = custom_event.split(":")
 
     # 获取今年的自定义事件日期
-    custom_event_date_this_year = datetime.strptime(f"{now.year}-{custom_event_date_str}", "%Y-%m-%d")
+    custom_event_date_this_year = datetime.strptime(f"{now.year}-{custom_event_date_str}", "%Y-%m-%d").date()
 
     # 如果今年的自定义事件日期已经过去，那么下一次自定义事件日期就是明年
     if now > custom_event_date_this_year:
-        next_custom_event_date = datetime.strptime(f"{now.year + 1}-{custom_event_date_str}", "%Y-%m-%d")
+        next_custom_event_date = datetime.strptime(f"{now.year + 1}-{custom_event_date_str}", "%Y-%m-%d").date()
     else:
         next_custom_event_date = custom_event_date_this_year
 
@@ -85,13 +85,13 @@ for custom_lunar_event in custom_lunar_events:
     custom_lunar_event_date_this_year = ZhDate(now.year, custom_lunar_event_month, custom_lunar_event_day).to_datetime().date()
 
     # 如果今年的自定义阴历事件日期已经过去，那么下一次自定义阴历事件日期就是明年
-    if now.date() > custom_lunar_event_date_this_year:
+    if now > custom_lunar_event_date_this_year:
         next_custom_lunar_event_date = ZhDate(now.year + 1, custom_lunar_event_month, custom_lunar_event_day).to_datetime().date()
     else:
         next_custom_lunar_event_date = custom_lunar_event_date_this_year
 
     # 计算距离下一次自定义阴历事件还有多少天
-    custom_lunar_event_days_left = (next_custom_lunar_event_date - now.date()).days
+    custom_lunar_event_days_left = (next_custom_lunar_event_date - now).days
 
     info += f" 距离 {custom_lunar_event_name} 还有 {custom_lunar_event_days_left} 天。"
 
