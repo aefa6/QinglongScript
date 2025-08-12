@@ -6,7 +6,7 @@ import requests
 import json
 import notify
 
-url = 'https://60s.viki.moe/?encoding=text'
+url = 'https://60s.viki.moe/v2/60s'
 resp = requests.get(url)
 content = resp.text
 # 分片处理
