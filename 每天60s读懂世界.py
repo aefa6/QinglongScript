@@ -10,9 +10,9 @@ url = 'https://60s.viki.moe/v2/60s?encoding=text'
 resp = requests.get(url)
 content = resp.text
 # 分片处理
-pieces = resp.text.split('\n', 8)
-content1 = '\n'.join(pieces[:8])  
-content2 = '\n'.join(pieces[8:])
+pieces = resp.text.split('\n', 10)
+content1 = '\n'.join(pieces[:10])  
+content2 = '\n'.join(pieces[10:])
 
 info1 = f"""
 {content1}   
