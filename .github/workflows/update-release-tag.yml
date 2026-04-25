@@ -1,9 +1,12 @@
-name: Auto Release (Patch Only)
+name: Auto Release (Patch Only, Root Code)
 
 on:
   push:
     branches:
       - main
+    paths:
+      - "*.py"
+      - "*.js"
 
 permissions:
   contents: write
@@ -27,7 +30,6 @@ jobs:
       - name: Collect commits since last tag
         run: |
           if [ -z "${{ steps.get_tag.outputs.latest_tag }}" ]; then
-            # 第一次发布：没有 tag
             git log --pretty=format:"- %s (%h)" > commits.md
           else
             git log "${{ steps.get_tag.outputs.latest_tag }}..HEAD" \
