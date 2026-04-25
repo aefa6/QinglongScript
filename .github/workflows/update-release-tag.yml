@@ -1,0 +1,85 @@
+name: Auto Release (Patch Only)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          TAG=$(git tag --list "v*" --sort=v:refname | tail -n 1)
+          echo "latest_tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Collect commits since last tag
+        run: |
+          if [ -z "${{ steps.get_tag.outputs.latest_tag }}" ]; then
+            # 第一次发布：没有 tag
+            git log --pretty=format:"- %s (%h)" > commits.md
+          else
+            git log "${{ steps.get_tag.outputs.latest_tag }}..HEAD" \
+              --pretty=format:"- %s (%h)" > commits.md
+          fi
+
+      - name: Calculate next patch version
+        id: version
+        run: |
+          if [ -z "${{ steps.get_tag.outputs.latest_tag }}" ]; then
+            NEW_TAG="v1.0.0"
+          else
+            VERSION=${{ steps.get_tag.outputs.latest_tag }}
+            VERSION=${VERSION#v}
+
+            MAJOR=$(cut -d. -f1 <<< "$VERSION")
+            MINOR=$(cut -d. -f2 <<< "$VERSION")
+            PATCH=$(cut -d. -f3 <<< "$VERSION")
+
+            PATCH=$((PATCH + 1))
+            NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate Release Notes
+        run: |
+          echo "## 🚀 Release ${{ steps.version.outputs.new_tag }}" > notes.md
+          echo "" >> notes.md
+          echo "### 📦 Changes" >> notes.md
+
+          if [ -s commits.md ]; then
+            cat commits.md >> notes.md
+          else
+            echo "- Initial release" >> notes.md
+          fi
+
+      - name: Create git tag
+        run: |
+          git tag ${{ steps.version.outputs.new_tag }}
+          git push origin ${{ steps.version.outputs.new_tag }}
+
+      - name: Create release archive
+        run: |
+          zip -r release-${{ steps.version.outputs.new_tag }}.zip . \
+            -x ".git/*" ".github/*"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.new_tag }}
+          name: Release ${{ steps.version.outputs.new_tag }}
+          body_path: notes.md
+          files: |
+            release-${{ steps.version.outputs.new_tag }}.zip
